@@ -9,7 +9,7 @@ test:${data} ${target} ${result}
 	diff ${result} ${temp_file} && echo "correct" || echo "not correct"
 
 ${target}:${src}
-	@g++ -std=c++11 ${src} -o ${target}
+	@g++ -std=c++98 ${src} -o ${target}
 
 to_clip:${src}
 	@xsel -b -i < ${src}
