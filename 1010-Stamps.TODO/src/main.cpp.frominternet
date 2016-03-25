@@ -1,0 +1,144 @@
+#include <iostream>  
+#include <vector>  
+#include <list>  
+#include <map>  
+#include <set>  
+#include <deque>  
+#include <queue>  
+#include <stack>  
+#include <bitset>  
+#include <algorithm>  
+#include <functional>  
+#include <numeric>  
+#include <utility>  
+#include <sstream>  
+#include <iomanip>  
+#include <cstdio>  
+#include <cmath>  
+#include <cstdlib>  
+#include <cctype>  
+#include <map>  
+#include <string>  
+#include <cstring>  
+#include <cmath>  
+#include <ctime>  
+#define MAXN 100007  
+#define INF 1000000000  
+#define eps 1e-7  
+using namespace std;  
+int size, x;  
+int stamp[550];  
+int some;  
+struct wwj  
+{  
+	int cnt, num;  
+	int mx, ana[555];  
+	void init()  
+	{  
+		cnt = 0;  
+		num = 0;  
+		mx = 0;  
+		memset(ana, 0, sizeof(ana));  
+	}  
+}tmp, ans;  
+void init()  
+{  
+	some = 0;  
+	tmp.init();  
+	ans.init();  
+}  
+void get()  
+{  
+	tmp.cnt = 0;  
+	tmp.mx = 0;  
+	for(int i = 0; i < size; i++)  
+	{  
+		if(tmp.ana[i])  
+		{  
+			tmp.cnt++;  
+			if(stamp[i] > tmp.mx)  
+				tmp.mx = stamp[i];  
+		}  
+	}  
+}  
+void dfs(int index, int num, int sum)  
+{  
+	if(num > 4) return;  
+	if(sum == x)  
+	{  
+		tmp.num = num;  
+		get();  
+		if(tmp.cnt > ans.cnt)  
+		{  
+			ans = tmp;  
+			some = 1;  
+		}  
+		else if(tmp.cnt == ans.cnt)  
+		{  
+			if(tmp.num < ans.num)  
+			{  
+				ans = tmp;  
+				some = 1;  
+			}  
+			else if(tmp.num == ans.num)  
+			{  
+				if(tmp.mx > ans.mx)  
+				{  
+					ans = tmp;  
+					some = 1;  
+				}  
+				else if(tmp.mx == ans.mx) {some++;}  
+			}  
+		}  
+		return;  
+	}  
+	if(index >= size || sum > x) return;  
+	for(int i = 0; i <= 4; i++)  
+	{  
+		tmp.ana[index] += i;  
+		dfs(index + 1, num + i, sum + stamp[index] * i);  
+		tmp.ana[index] -= i;  
+	}  
+}  
+void output()  
+{  
+	printf("%d ", x);  
+	if(some == 0) printf("---- none\n");  
+	else if(some == 1)  
+	{  
+		printf("(%d):", ans.cnt);  
+		for(int i = 0; i < size; i++)  
+		{  
+			if(ans.ana[i] > 0)  
+			{  
+				for(int j = 0; j < ans.ana[i]; j++)  
+					printf(" %d", stamp[i]);  
+			}  
+		}  
+		printf("\n");  
+	}  
+	else printf("(%d): tie\n", ans.cnt);  
+}  
+int main()  
+{  
+	while(scanf("%d", &x) != EOF)  
+	{  
+		size = 0;  
+		stamp[size++] = x;  
+		while(scanf("%d", &x) != EOF && x)  
+		{  
+			int nt = 0;  
+			for(int i = 0; i < size; i++)  
+				if(stamp[i] == x) nt++;  
+			if(nt >= 5) continue;  
+			stamp[size++] = x;  
+		}  
+		while(scanf("%d", &x) != EOF && x)  
+		{  
+			init();  
+			dfs(0, 0, 0);  
+			output();  
+		}  
+	}  
+	return 0;  
+}  

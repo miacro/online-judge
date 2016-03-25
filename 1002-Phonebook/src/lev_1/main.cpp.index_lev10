@@ -1,0 +1,77 @@
+#include<cstdio>
+#include<cstring>
+struct index_t
+{
+	index_t* sub_index[10];
+};
+int res[10];
+void output(index_t *index,int lev,int &flag)
+{
+	if(lev==6)
+	{
+		for(int i=0;i<10;i++)
+			if(index->sub_index[i]>(index_t*)sizeof(index_t))
+			{
+				res[lev]=i;
+				flag=1;
+				printf("%d%d%d-%d%d%d%d %d\n",res[0],res[1],res[2],res[3],res[4],res[5],res[6],((int)(index->sub_index[i]))/sizeof(index_t));
+			}
+		return;
+	}
+	for(int i=0;i<10;i++)
+		if(index->sub_index[i]!=NULL)
+		{
+			res[lev]=i;
+			output(index->sub_index[i],lev+1,flag);
+		}	
+}
+int main()
+{
+	int count;
+	scanf("%d",&count);
+	int i=0;
+	index_t *index=new index_t;
+	for(i=0;i<10;i++)
+		index->sub_index[i]=NULL;
+	for(i=0;i<count;i++)
+	{
+		int	num=0;
+		int temp;
+		int j=0,k=0;
+		index_t * ind_temp=index;
+		char phone[50];
+		scanf("%s",phone);
+		while(k<7)
+		{
+			if(phone[j]!='-')
+			{
+				if(phone[j]>='A'&&phone[j]<='O')
+					temp=((int)(phone[j])+1)/3-20;
+				else if(phone[j]>='P'&& phone[j] <='S')
+					temp=7;
+				else if(phone[j]>='T'&&phone[j]<='Y')
+					temp=((int)(phone[j]))/3-20;
+				else if(phone[j]>='0' && phone[j]<='9')
+					temp=((int)(phone[j]))-48;
+				if(k<6)
+						if(ind_temp->sub_index[temp]==NULL)
+						{
+							ind_temp->sub_index[temp]=new index_t;
+							for(int x=0;x<10;x++)
+								ind_temp->sub_index[temp]->sub_index[x]=NULL;
+							ind_temp=ind_temp->sub_index[temp];
+						}
+						else ind_temp=ind_temp->sub_index[temp];
+				if(k==6)
+						(ind_temp->sub_index[temp])++;
+				k++;
+			}
+			j++;
+		}
+	}
+	int	flag=0;
+	output(index,0,flag);
+	if(flag==0)
+		printf("No duplicates.\n");
+}
+

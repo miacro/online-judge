@@ -1,0 +1,77 @@
+#include<cstdio>
+#include<cmath>
+#include<algorithm>
+struct pairOut_t{
+	int pixel;
+	int position;
+};
+bool compare(pairOut_t a,pairOut_t b){return a.position<b.position;}
+int n;
+int pairIn[1001][2];
+pairOut_t pairOut[8001];
+int pairInCount;
+int pairOutCount;
+
+int getPixel(int pos){
+	int left=0,right=pairInCount-1;
+	while(left<right){
+		int mid=(left+right)/2;
+		if(pairIn[mid][1]==(pos+1)){
+			left=mid;
+			break;
+		}
+		else if(pairIn[mid][1]<(pos+1))
+			left=mid+1;
+		else right=mid;
+	}
+	return pairIn[left][0];
+}
+int main(){
+		while(scanf("%d",&n)!=EOF&&n!=0){
+		pairInCount=0;
+		pairOutCount=0;
+		int position=0;
+		while(scanf("%d %d",&pairIn[pairInCount][0],&pairIn[pairInCount][1]),
+				pairIn[pairInCount][0]!=0 || pairIn[pairInCount][1]!=0)
+			position+=pairIn[pairInCount][1],pairIn[pairInCount++][1]=position;
+		for(int i=0;i<=pairInCount;i++){
+			if(i==0)
+				position=0;
+			else position=pairIn[i-1][1];
+			int row=position/n;
+			int col=position%n;
+			for(int j=row-1;j<=row+1;j++)
+				for(int k=col-1;k<=col+1;k++){
+					if(j<0 || k<0 || k>=n || (j*n+k)>=pairIn[pairInCount-1][1] ) 
+						continue;
+					int max=0;
+					int pixelCen=getPixel(j*n+k);
+					for(int l=j-1;l<=j+1;l++)
+						for(int m=k-1;m<=k+1;m++){
+							if(l<0 || m<0 || (l*n+m)>=pairIn[pairInCount-1][1] || m>=n || (l==j&&m==k))
+								continue;
+							int pixelEdge=getPixel(l*n+m);
+							max=(max>abs(pixelCen-pixelEdge))?max:abs(pixelCen-pixelEdge);
+						}
+					pairOut[pairOutCount].pixel=max;
+					pairOut[pairOutCount++].position=j*n+k;
+				}	
+			position=pairIn[i][1];
+		}
+		pairOut[pairOutCount].pixel=256;
+		pairOut[pairOutCount].position=pairIn[pairInCount-1][1];
+
+		std::sort(pairOut,pairOut+pairOutCount,compare);
+		printf("%d\n",n);
+		pairOut_t cur=pairOut[0];
+		for(int j=0;j<pairOutCount;j++)	{
+			if(cur.pixel==pairOut[j].pixel)
+				continue;
+			printf("%d %d\n",cur.pixel,pairOut[j].position-cur.position);
+			cur=pairOut[j];
+		}
+		printf("%d %d\n0 0\n",cur.pixel,pairOut[pairOutCount].position-cur.position);
+	}
+	printf("0\n");
+}
+

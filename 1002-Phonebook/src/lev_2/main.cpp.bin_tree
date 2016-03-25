@@ -1,0 +1,115 @@
+#include<cstdio>
+#include<map>
+using namespace std;
+struct bin_node
+{
+	int num;
+	int count;
+	bin_node* left;
+	bin_node* right;
+};
+void insert(bin_node* &root,int key);
+void insert_node(bin_node* node,int key);
+void output(bin_node* root,bool &flag);
+int main()
+{
+	int count;
+	scanf("%d",&count);
+	bin_node* phone_book=NULL;
+	int trans['Y'+1];
+	trans['A']=trans['B']=trans['C']=trans['2']=2;
+	trans['D']=trans['E']=trans['F']=trans['3']=3;
+	trans['G']=trans['H']=trans['I']=trans['4']=4;
+	trans['J']=trans['K']=trans['L']=trans['5']=5;
+	trans['M']=trans['N']=trans['O']=trans['6']=6;
+	trans['P']=trans['R']=trans['S']=trans['7']=7;
+	trans['T']=trans['U']=trans['V']=trans['8']=8;
+	trans['W']=trans['X']=trans['Y']=trans['9']=9;
+	trans['0']=0;
+	trans['1']=1;
+	trans['-']=0;
+	for(int i=0;i<count;i++)
+	{
+		int	num=0;
+		int j=0;
+		char phone[50];
+		scanf("%s",phone);
+		while(phone[j]!='\0')
+		{
+			if(phone[j]!='-')
+				num=((num<<4)+trans[phone[j]]);
+			j++;
+		}
+		insert(phone_book,num);
+	}
+	bool flag=false;
+	output(phone_book,flag);
+	if(flag==false)
+		printf("No duplicates.\n");
+}
+void insert(bin_node* &root,int key)
+{
+	if(root==NULL)
+	{
+		root=new bin_node;
+		root->count=1;
+		root->num=key;
+		root->left=NULL;
+		root->right=NULL;
+		return;
+	}
+	else insert_node(root,key);
+}
+void insert_node(bin_node* node,int key)
+{
+	if(node->num==key)
+	{
+		node->count++;
+		return;
+	}
+	if(node->num>key)
+		if(node->left!=NULL)
+		{
+			insert_node(node->left,key);
+			return;
+		}
+		else 
+		{
+			node->left=new bin_node;
+			node->left->count=1;
+			node->left->num=key;
+			node->left->left=NULL;
+			node->left->right=NULL;
+			return;
+		}
+	if(node->num<key)
+		if(node->right!=NULL)
+		{
+			insert_node(node->right,key);
+			return;
+		}
+		else
+		{
+			node->right=new bin_node;
+			node->right->count=1;
+			node->right->num=key;
+			node->right->left=NULL;
+			node->right->right=NULL;
+			return;
+		}
+}
+
+void output(bin_node* root,bool &flag)
+{
+	if(root==NULL)
+		return;
+	if(root->left!=NULL)
+		output(root->left,flag);
+	if(root->count>1)
+	{
+		printf("%03X-%04X %d\n",(root->num)>>16,(root->num)%65536,root->count);
+		flag=true;
+	}
+	if(root->right!=NULL)
+		output(root->right,flag);
+}

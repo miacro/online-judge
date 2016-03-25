@@ -1,0 +1,61 @@
+#include<cstring>
+#include<cstdio>
+using namespace std;
+int main()
+{
+	int count;
+	scanf("%d",&count);
+	int i=0;
+	int *index[1000];
+	for(;i<1000;i++)
+		index[i]=NULL;
+	for(i=0;i<count;i++)
+	{
+		int	num=0;
+		int temp;
+		int j=0,k=0;
+		char phone[50];
+		scanf("%s",phone);
+		while(k<7)
+		{
+			if(phone[j]!='-')
+			{
+				if(phone[j]>='A'&&phone[j]<='O')
+					temp=((int)(phone[j])+1)/3-20;
+				else if(phone[j]>='P'&& phone[j] <='S')
+					temp=7;
+				else if(phone[j]>='T'&&phone[j]<='Y')
+					temp=((int)(phone[j]))/3-20;
+				else if(phone[j]>='0' && phone[j]<='9')
+					temp=((int)(phone[j]))-48;
+				num=num*10+temp;
+				k++;
+			}
+			j++;
+		}
+		int fore=num/10000;
+		int back=num%10000;
+		if(index[fore]==NULL)
+		{
+			index[fore]=new int[10000];
+			memset((void*)(index[fore]),0,sizeof(int)*10000);
+			index[fore][back]=1;
+		}
+		else index[fore][back]++;
+	}
+	int	flag=0;
+	int j=0;
+	for(i=0;i<1000;i++)
+	{
+		if(index[i]!=NULL)
+			for(j=0;j<10000;j++)
+				if(index[i][j]>1)
+				{
+					flag=1;
+					printf("%03d-%04d %d\n",i,j,index[i][j]);
+				}
+	}
+	if(flag==0)
+		printf("No duplicates.\n");
+}
+

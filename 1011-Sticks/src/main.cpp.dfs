@@ -1,0 +1,53 @@
+#include<cstdio>
+#include<algorithm>
+int sticks[64];
+bool used[64];
+int n;
+int sum;
+int usedCount;
+int sample;
+bool dfs(int totalLen,int tempLen,int indx){
+	sample=-1;
+	while((--indx)>=0){
+		while(indx>=0 && ( used[indx]==true || sticks[indx]>tempLen || sample==sticks[indx])){--indx;}
+		if(indx<0)
+			break;
+		used[indx]=true;
+		usedCount++;
+		if(sticks[indx]==tempLen){
+			if(usedCount==n)
+				return true;
+			if(dfs(totalLen,totalLen,n))
+				return true;
+			sample=sticks[indx];
+		}
+		if(sticks[indx]<tempLen){
+			if(dfs(totalLen,tempLen-sticks[indx],indx))
+				return true;
+			sample=sticks[indx];
+		}
+		used[indx]=false;
+		usedCount--;
+		if(totalLen==tempLen)
+			break;
+	}
+	return false;
+}
+int main(){
+	while(scanf("%d",&n),n!=0){
+		sum=0;
+		for(int i=0;i<n;i++)
+			scanf("%d",sticks+i),sum+=sticks[i];
+		std::sort(sticks,sticks+n);
+		for(int i=sticks[n-1];i<=sum;i++)
+			if(!(sum % i)){
+				for(int j=0;j<n;j++)
+					used[j]=false;
+				usedCount=0;
+				if(dfs(i,i,n)){
+					printf("%d\n",i);
+					break;
+				}
+			}
+	}
+}
