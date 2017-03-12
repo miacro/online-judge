@@ -3,10 +3,10 @@ TARGET=
 MAKE=make --no-print-directory
 
 all:
-	@  cd ${OJ_DIR} \
-	&& for VAR in `ls`; \
+	@  for VAR in `ls ${OJ_DIR}`; \
 	   do \
-		   ${MAKE} -C $${VAR} ${TARGET}; \
+		   echo -n "${OJ_DIR}/$${VAR} "; \
+		   ${MAKE} -C "${OJ_DIR}/$${VAR}" ${TARGET}; \
 		 done 
 
 all-clean:
