@@ -3,7 +3,7 @@ TARGET=
 MAKE=make --no-print-directory
 
 all:
-	@  for VAR in `ls ${OJ_DIR}`; \
+	@  for VAR in $$(ls ${OJ_DIR}); \
 	   do \
 		   echo -n "${OJ_DIR}/$${VAR} "; \
 		   ${MAKE} -C "${OJ_DIR}/$${VAR}" ${TARGET}; \
