@@ -3,7 +3,10 @@ class Solution:
         table = {(-1, -1): True}
         for p_index in range(len(p)):
             p_char = p[p_index]
-            p_next = p[p_index + 1 : p_index + 2]
+            if p_index == len(p) - 1:
+                p_next = ""
+            else:
+                p_next = p[p_index + 1]
             if p_next == "*":
                 table[(p_index + 1, -1)] = table.get((p_index - 1, -1), False)
             for s_index in range(len(s)):
