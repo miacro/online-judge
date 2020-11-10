@@ -1,24 +1,32 @@
 class Solution:
     def superEggDrop(self, K: int, N: int) -> int:
-        dp = [[j for j in range(N + 1)] for _ in range(K)]
-        for i in range(1, K):
-            for j in range(1, N + 1):
-                low = 1
-                high = j
-                count = j
-                while low < high:
-                    mid = low + (high - low + 1) // 2
-                    left = dp[i - 1][mid - 1]
-                    right = dp[i][j - mid]
-                    count = min(count, max(left, right) + 1)
-                    if left == right:
-                        break
-                    elif left > right:
-                        high = mid - 1
-                    else:
-                        low = mid
-                dp[i][j] = count
-        return dp[K - 1][N]
+        def search(k, n):
+            if k == 1:
+                return n
+            count = dp.get((k, n), None)
+            if count is not None:
+                return count
+            low = 1
+            high = n
+            count = n
+            while low < high:
+                mid = low + (high - low) // 2
+                left = search(k - 1, mid - 1)
+                right = search(k, n - mid)
+                current = (left if left >= right else right) + 1
+                count = current if current < count else count
+                if left == right:
+                    break
+                elif left > right:
+                    high = mid
+                else:
+                    low = mid + 1
+            dp[(k, n)] = count
+            return count
+
+        dp = {}
+
+        return search(K, N)
 
 
 if __name__ == "__main__":
@@ -28,4 +36,5 @@ if __name__ == "__main__":
     assert solution.superEggDrop(2, 6) == 3
     assert solution.superEggDrop(2, 2) == 2
     assert solution.superEggDrop(3, 14) == 4
-    assert solution.superEggDrop(100, 8191) == 12
+    assert solution.superEggDrop(3, 25) == 5
+    assert solution.superEggDrop(100, 8191) == 13
